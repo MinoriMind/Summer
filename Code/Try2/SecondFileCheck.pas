@@ -1,7 +1,7 @@
 ﻿unit SecondFileCheck;
 
 interface
-  uses GlobalTypes;
+  uses GlobalTypes, FirstFileCheck;
   
   procedure File2Check (var f2: text;
                         var toc: TableOfCatalog);
@@ -15,7 +15,7 @@ procedure File2Check (var f2:text;
 var
   catalog: text;
   s,ssave: string;
-  sCounter: integer;
+  sCounter, sRightCounter: integer;
   error: boolean;
   
   
@@ -52,8 +52,12 @@ delete(s, 1, 16);
 end;
 
 
-procedure PutToArray(ssave: string);
+procedure PutToArray(ssave: string; sRightCounter: integer);
 begin
+  {toc[sRightCounter].period:=ssave[1];
+  delete(ssave, 1, 2);
+  toc[sRightCounter].profession:=copy(ssave, 1, 15);
+  delete(ssave, 1, 16);}
 end;
 
 
@@ -61,6 +65,7 @@ begin
   assign(catalog, 'Каталог.txt');
   reset(catalog);
   sCounter:=0;
+  sRightCounter:=0;
   if Eof(catalog) then writeln('Файл "Каталог" пуст') else begin
     writeln('Каталог..');
     while not EoF(catalog) do
@@ -74,16 +79,18 @@ begin
     	error:=true;
     	end
     	else begin
-    	if s = '' then writeln('Cтрока ', sCounter, ' пустая') else
-    	begin
     	  if CheckPeriod(s) = true then error:=true;
     	  if CheckName(s, 'Профессия') = true then error:=true;
-    	  if error = false then PutToArray(ssave);
-    	end;
+    	  if error = false then begin
+    	    sRightCounter:=sRightCounter + 1;
+    	    PutToArray(ssave, sRightCounter);
+    	  end;
+      end;
     end;
-    end;
-    end;
-    close(catalog);
+    if sRightCounter = 0 then
+      writeln('Файл “Каталог” не содержит правильной информации');
+  end;
+  close(catalog);
 end;
 
 

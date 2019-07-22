@@ -5,7 +5,7 @@ interface
   
   procedure File1Check (var f1: text;
                         var tow: TableOfWorkers);
-
+                 
 
 implementation
 
@@ -15,7 +15,7 @@ procedure File1Check (var f1:text;
 var
   staff: text;
   s,ssave: string;
-  sCounter: integer;
+  sCounter, sRightCounter: integer;
   error: boolean;
 
   
@@ -92,52 +92,114 @@ else begin
  end;
  //проверка года
  val(year, yy, err);
- if (yy < 0) or (yy > 2019) or (err<>0) then begin
-    writeln('Ошибка в году ', field, ', строка ', sCounter);
-    result:=true;
- end;
+ if field = 'Рождения' then
+   if (yy < 1950) or (yy > 2017) or (err<>0) then begin
+      writeln('(',sCounter,') ОШИБКА: Год рождения ', F,
+      ' должен быть в диапазоне [1950..2017]');
+      result:=true; 
+   end;
+ if field = 'Аттестации' then
+   if (yy < 2000) or (yy > 2017) or (err<>0) then begin
+      writeln('(',sCounter,') ОШИБКА: Год аттестации ', F,
+      ' должен быть в диапазоне [1900..2017]');
+      result:=true; 
+   end;
  if err <> 0 then result:=true;
- if result = false then
- begin
   case mm of
-   1, 3, 5, 7, 8, 10, 12: 
-   if dd > 31 then result:=true;//31 день
-   4, 6, 9, 11: 
-   if dd > 30 then result:=true;//30 дней
+   1, 3, 5, 7, 8, 10, 12: //31 день
+   if (dd < 1) or (dd > 31) then begin
+    result:=true;
+    writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+    ' должен быть в диапазоне [01..31]');
+   end;
+   4, 6, 9, 11: //30 дней
+   if (yy mod 4 = 0) and (dd < 1) or (dd > 30) then begin
+    result:=true;
+    writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+    ' должен быть в диапазоне [01..30]');
+   end;
    2:
-   if dd > 28 then result:=true;
+   begin
+     if (yy mod 4 <> 0) and (dd < 1) or (dd > 29) then begin
+      result:=true;
+      writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+      ' должен быть в диапазоне [01..29]');
+     end;
+     if (dd < 1) or (dd > 28) then begin
+      result:=true;
+      writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+      ' должен быть в диапазоне [01..28]');
+     end;
+   end;
   end;
- //февраль високосного года
-  if (((yy mod 4 = 0) and (yy mod 100 <> 0)) or (yy mod 400 = 0))
-  and (error = false) then //если год високостный и нет ошибок
-  if (mm = 2) and (dd > 29) then result:=true;
-  end;
-if result = true then
-  writeln ('Ошибка в строке, ', sCounter, ', несоответствие дня и месяца ', field);
 end;
 end;
 
-procedure PutToArray(ssave: string);
+procedure PutToArray(ssave: string;var tow: TableOfWorkers);
+var dd, mm, yy: string;
+    day, mon, year: integer;
+    err: integer;
 begin
+  tow[sRightCounter].gender:=ssave[1];
+  delete(ssave, 1, 2);
+  tow[sRightCounter].profession:=copy(ssave, 1, 15);
+  delete(ssave, 1, 16);
+  dd:=copy(ssave, 1, 2);
+  val(dd, day, err);
+  mm:=copy(ssave, 3, 2);
+  val(mm, mon, err);
+  yy:=copy(ssave, 3, 2);
+  val(yy, year, err);
+  tow[sRightCounter].birth.day:=day;
+  tow[sRightCounter].birth.month:=mon;
+  tow[sRightCounter].birth.year:=year;
+  delete(ssave, 1, 11);
+  dd:=copy(ssave, 1, 2);
+  val(dd, day, err);
+  mm:=copy(ssave, 3, 2);
+  val(mm, mon, err);
+  yy:=copy(ssave, 3, 2);
+  val(yy, year, err);
+  tow[sRightCounter].attestation.day:=day;
+  tow[sRightCounter].attestation.month:=mon;
+  tow[sRightCounter].attestation.year:=year;
+  delete(ssave, 1, 11);
+  delete(ssave, 1, 11);
 end;
+
+
+{function DateDifference(minuend, subtrahend: Date): boolean;
+var dif: shortint;
+begin
+if (minuend.month > subtrahend.month) or 
+  ((minuend.month = subtrahend.month) and (minuend.day >= subtrahend.day)) then
+  dif:=minuend.year - subtrahend.year else
+  dif:=minuend.year - subtrahend.year - 1;
+if dif <=17 then begin
+  writeln('(',sCounter,') ОШИБКА: Разница между датой рождения ',
+          minuend, ') и датой аттестации' , subtrahend,' должна быть больше 17');
+  result:=true;
+end;
+end;}
 
 
 begin
   assign(staff, 'Персонал.txt');
   reset(staff);
+  sRightCounter:=0;
   sCounter:=0;
-  if Eof(staff) then writeln('Файл "Персонал" пуст') else begin 
+  if Eof(staff) then writeln('Файл "Персонал" пуст') else begin
    writeln('Персонал..');
    while not EoF(staff) do
       begin
       	readln(staff, s);
       	sCounter:=sCounter + 1;
-      	ssave:=copy(s, 1 , length(s));
+      	ssave:=copy(s, 23 , length(s));
       	//проверка на правильность структуры таблицы
       	if (copy(s,16,1) <> ' ') or (copy(s,19,1) <> ' ') or(copy(s,22,1) <> ' ')
       	or(copy(s,24,1) <> ' ') or (copy(s,40,1) <> ' ') or (copy(s,51,1) <> ' ')
       	then begin
-      	writeln('(',sCounter,') ОШИБКА: Стрoка задана не табличным видом.',
+      	writeln('(',sCounter,') ОШИБКА: Стрoка задана не табличным видом. ',
       	'В таблице 16, 19, 22, 24, 40, 51 символы должны являться пробелами');
       	error:=true;
       	end
@@ -151,10 +213,16 @@ begin
       	  if CheckName(s, 'Профессия') = true then error:=true;
       	  if CheckDate(s, 'Рождения') = true then error:=true;
       	  if CheckDate(s, 'Аттестации') = true then error:=true;
-      	  if error = false then PutToArray(ssave);
+    //  	  if DateDifference(;{что-точто-то}) = true then error:=true;
+      	  if error = false then begin
+      	    sRightCounter:=sRightCounter + 1;
+      	    PutToArray(ssave, tow);
+      	  end;
       	end;
       end;
     end;
+     if sRightCounter = 0 then
+      writeln('Файл “Персонал” не содержит правильной информации');
   end;
     close(staff);
 end;

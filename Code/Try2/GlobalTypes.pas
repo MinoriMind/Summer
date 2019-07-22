@@ -6,9 +6,9 @@ interface
 
 type
   Date = record
-    day: byte;
-    month: byte;
-    year: byte;
+    day: shortint;
+    month: shortint;
+    year: smallint;
   end;
 
   worker = record
@@ -30,9 +30,9 @@ type
   end;
   
   
-  TableOfWorkers = array [0..maxcorrect - 1] of worker;
-  TableOfCatalog = array [0..maxcorrect - 1] of catalog;
-  TableOfReq = array [0..maxcorrect - 1] of req_to_attestate;
+  TableOfWorkers = array [0..maxcorrect] of worker;
+  TableOfCatalog = array [0..maxcorrect] of catalog;
+  TableOfReq = array [0..maxcorrect] of req_to_attestate;
   
   
   

@@ -1,5 +1,5 @@
 ﻿program main;
-uses GlobalTypes, FirstFileCheck, SecondFileCheck;
+uses GlobalTypes, FirstFileCheck, SecondFileCheck, ThirdFileCreation;
 
 var
   staff, catalog: text;
@@ -12,10 +12,6 @@ var
 
   
 begin
-
 File1Check(staff,tow);
 File2Check(catalog,toc);
 end.
-
-
-//не работает период если большая буква
