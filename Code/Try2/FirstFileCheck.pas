@@ -15,7 +15,6 @@ procedure File1Check (var f1:text;
 var
   staff: text;
   s,ssave: string;
-  person: worker;
   sCounter: integer;
   error: boolean;
 
@@ -40,8 +39,6 @@ delete(s, 1, 16);
 end;
 
 
-
-
 function CheckInitials (var s:string; field:string) :boolean;
 var F: string[2];
 begin
@@ -60,11 +57,11 @@ function CheckGender (var s:string):boolean;
 var F: char;
 begin
 F:=s[1];
-if (F <> 'М') or (F <> 'Ж') then begin
+if (F <> 'М') and (F <> 'Ж') then begin
   result:=true;
   writeln('(',sCounter,') ОШИБКА: Пол ', F, ' должен быть буквой М или Ж');
 end;
-delete(s, 1, 3);
+delete(s, 1, 2);
 end;
 
 
@@ -72,7 +69,14 @@ function CheckDate (var s:string; field:string):boolean;
  var day, month, year:string;
      dd, mm, yy: integer;
      var err: integer;
+     F: string[10];
 begin
+F:=copy(s, 1, 10);
+if (s[3] <> '/') or (s[6] <> '/') then begin
+  result:=true;
+  writeln('(',sCounter,') ОШИБКА: День, месяц и год рождения ', F, ' должны быть разделены символом ‘/’');
+end
+else begin
  day:=copy(s, 1, 2);
  delete(s, 1, 3);
  month:=copy(s, 1, 2);
@@ -110,48 +114,50 @@ begin
   end;
 if result = true then
   writeln ('Ошибка в строке, ', sCounter, ', несоответствие дня и месяца ', field);
-end;//bebe
+end;
+end;
 
-procedure PutToArray();
+procedure PutToArray(ssave: string);
 begin
 end;
 
 
-
 begin
-  assign(staff, 'Staff.txt');
+  assign(staff, 'Персонал.txt');
   reset(staff);
   sCounter:=0;
-  if Eof(staff) then writeln('Файле пуст') else
-    while not EoF(staff) do
-    begin
-    	readln(staff, s);
-    	sCounter:=sCounter + 1;
-    	ssave:=copy(s, 1 , length(s));
-    	//проверка на правильность структуры таблицы
-    	{if (copy(s,16,1) <> ' ') or (copy(s,19,1) <> ' ') or(copy(s,22,1) <> ' ')
-    	or(copy(s,24,1) <> ' ') or (copy(s,40,1) <> ' ') or (copy(s,51,1) <> ' ')
-    	then begin
-    	writeln('Стрoка ',sCounter ,' задана не табличным видом');
-    	error:=true;
-    	end
-    	else }begin
-    	if s = '' then writeln('Cтрока ', sCounter, ' пустая') else
-    	begin
-    	  if CheckName(s, 'Фамилия') = true then error:=true;
-    	  if CheckInitials(s, 'Имя') = true then error:=true;
-    	  if CheckInitials(s, 'Отчество') = true then error:=true;
-    	  if CheckGender(s) = true then error:=true;
-    	  if CheckName(s, 'Профессия') = true then error:=true;
-    	  if CheckDate(s, 'Рождения') = true then error:=true;
-    	  if CheckDate(s, 'Аттестации') = true then error:=true;
-    	  if error = false then PutToArray();
-    	end;
+  if Eof(staff) then writeln('Файл "Персонал" пуст') else begin 
+   writeln('Персонал..');
+   while not EoF(staff) do
+      begin
+      	readln(staff, s);
+      	sCounter:=sCounter + 1;
+      	ssave:=copy(s, 1 , length(s));
+      	//проверка на правильность структуры таблицы
+      	if (copy(s,16,1) <> ' ') or (copy(s,19,1) <> ' ') or(copy(s,22,1) <> ' ')
+      	or(copy(s,24,1) <> ' ') or (copy(s,40,1) <> ' ') or (copy(s,51,1) <> ' ')
+      	then begin
+      	writeln('(',sCounter,') ОШИБКА: Стрoка задана не табличным видом.',
+      	'В таблице 16, 19, 22, 24, 40, 51 символы должны являться пробелами');
+      	error:=true;
+      	end
+      	else begin
+      	if s = '' then writeln('Cтрока ', sCounter, ' пустая') else
+      	begin
+      	  if CheckName(s, 'Фамилия') = true then error:=true;
+      	  if CheckInitials(s, 'Имя') = true then error:=true;
+      	  if CheckInitials(s, 'Отчество') = true then error:=true;
+      	  if CheckGender(s) = true then error:=true;
+      	  if CheckName(s, 'Профессия') = true then error:=true;
+      	  if CheckDate(s, 'Рождения') = true then error:=true;
+      	  if CheckDate(s, 'Аттестации') = true then error:=true;
+      	  if error = false then PutToArray(ssave);
+      	end;
+      end;
     end;
-    end;
+  end;
     close(staff);
 end;
-
 
 begin
 
