@@ -17,5 +17,6 @@ begin
 //ReadInputDate(input_date);
 File1Check(staff,tow);
 File2Check(catalog,toc);
-//PrintInFile(toq);
+PrintInFile(toq);
+writeln(toq[0].month);
 end.

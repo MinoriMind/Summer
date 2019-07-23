@@ -67,13 +67,13 @@ function CheckDate (var s:string; field:string):boolean;
      dd, mm, yy: integer;
      var err: integer;
      F: string[10];
+     Fd, Fm: string[2];
+     Fy: string[4];
 begin
 F:=copy(s, 1, 10);
-if (s[3] <> '/') or (s[6] <> '/') then begin
-  result:=true;
-  writeln('(',sCounter,') ОШИБКА: День, месяц и год рождения ', F, ' должны быть разделены символом ‘/’');
-end
-else begin
+Fd:=copy(s, 1, 2);
+Fm:=copy(s, 4, 2);
+Fy:=copy(s, 7, 4);
  day:=copy(s, 1, 2);
  delete(s, 1, 3);
  month:=copy(s, 1, 2);
@@ -84,20 +84,21 @@ else begin
  //проверка месяца
  val(month, mm, err);
  if (mm <= 0) or (mm > 12) or (err<>0) then begin
-  writeln('Ошибка в месяце ', field, ', строка ', sCounter);
+  writeln('(',sCounter,') ОШИБКА: Месяц ', field ,
+  Fm, ' должен быть в диапазоне [1..12]');
   result:=true;
  end;
  //проверка года
  val(year, yy, err);
- if field = 'Рождения' then
+ if field = 'рождения' then
    if (yy < 1950) or (yy > 2017) or (err<>0) then begin
-      writeln('(',sCounter,') ОШИБКА: Год рождения ', F,
+      writeln('(',sCounter,') ОШИБКА: Год рождения ', Fy,
       ' должен быть в диапазоне [1950..2017]');
       result:=true; 
    end;
- if field = 'Аттестации' then
+ if field = 'аттестации' then
    if (yy < 2000) or (yy > 2017) or (err<>0) then begin
-      writeln('(',sCounter,') ОШИБКА: Год аттестации ', F,
+      writeln('(',sCounter,') ОШИБКА: Год аттестации ', Fy,
       ' должен быть в диапазоне [1900..2017]');
       result:=true; 
    end;
@@ -106,31 +107,36 @@ else begin
    1, 3, 5, 7, 8, 10, 12: //31 день
    if (dd < 1) or (dd > 31) then begin
     result:=true;
-    writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+    writeln('(',sCounter,') ОШИБКА: День ', field ,' ', Fd,
     ' должен быть в диапазоне [01..31]');
    end;
    4, 6, 9, 11: //30 дней
    if (yy mod 4 = 0) and (dd < 1) or (dd > 30) then begin
     result:=true;
-    writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+    writeln('(',sCounter,') ОШИБКА: День ', field ,' ', Fd,
     ' должен быть в диапазоне [01..30]');
    end;
    2:
    begin
      if (yy mod 4 <> 0) and (dd < 1) or (dd > 29) then begin
       result:=true;
-      writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+      writeln('(',sCounter,') ОШИБКА: День ', field ,' ', Fd,
       ' должен быть в диапазоне [01..29]');
      end;
      if (dd < 1) or (dd > 28) then begin
       result:=true;
-      writeln('(',sCounter,') ОШИБКА: День аттестации ', F,
+      writeln('(',sCounter,') ОШИБКА: День ', field ,' ', Fd,
       ' должен быть в диапазоне [01..28]');
      end;
    end;
   end;
+if (result = false) and ((F[3] <> '/') or (F[6] <> '/')) then begin
+  result:=true;
+  writeln('(',sCounter,') ОШИБКА: День, месяц и год ', field , ' ',
+  F, ' должны быть разделены символом ‘/’');
 end;
 end;
+
 
 procedure PutToArray(ssave: string;var tow: TableOfWorkers);
 var dd, mm, yy: string;
@@ -208,8 +214,8 @@ begin
       	  if CheckInitials(s, 'Отчество') = true then error:=true;
       	  if CheckGender(s) = true then error:=true;
       	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
-      	  if CheckDate(s, 'Рождения') = true then error:=true;
-      	  if CheckDate(s, 'Аттестации') = true then error:=true;
+      	  if CheckDate(s, 'рождения') = true then error:=true;
+      	  if CheckDate(s, 'аттестации') = true then error:=true;
     //  	  if DateDifference(;{что-точто-то}) = true then error:=true;
       	  if error = false then begin
       	    sRightCounter:=sRightCounter + 1;

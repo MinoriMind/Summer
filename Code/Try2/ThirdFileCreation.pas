@@ -10,10 +10,12 @@ implementation
 procedure PrintInFile (toq: TableOfReq);
 var i: byte;
 begin
-while (i <= maxcorrect) do 
-write(toq[i].month);
-write(toq[i].male);
-write(toq[i].fem);
+while (i <= maxcorrect) and (toq[i].month <> 0) do begin 
+  write(toq[i].month);
+  write(toq[i].male);
+  write(toq[i].fem);
+  i:=i + 1;
+end;
 end;
 //будет выводить массива в файл
 
@@ -42,7 +44,7 @@ var toq: TableOfReq;
     foundperiod: boolean;
 begin
 i:=0;
-while (i < maxcorrect) and (tow[i].gender <> '') do
+while (i <= 12) and (tow[i].gender <> '') do
 begin
   foundperiod:=false;
   j:=0;
@@ -56,10 +58,12 @@ begin
           toq[i].month:=tow[i].attestation.month;
           if tow[i].gender = 'М' then toq[i].male:=toq[i].male + 1 else
           toq[i].fem:=toq[i].fem + 1;
-        end;
+       end;
+       j:=j + 1; 
     end;
   end;
 end;
+i:=i + 1;
 end;
 
 begin
