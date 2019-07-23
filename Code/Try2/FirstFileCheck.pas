@@ -33,7 +33,21 @@ var
   error: boolean;
 
   
-
+function Date1less2 (var first, second: Date): boolean;
+//true если 1 дата меньше 2-й
+begin
+if first.year > second.year then result:=false;
+if first.year < second.year then result:=true;
+if first.year = second.year then begin
+  if first.month > second.month then result:=false;
+  if first.month < second.month then result:=true;
+  if first.month = second.month then begin
+    if first.day > second.day then result:=false;
+    if first.day < second.day then result:=true;
+    if first.day = second.day then result:=false;
+  end;
+end;
+end;
 
 
 function CheckInitials (var s:string; field:string) :boolean;
@@ -171,19 +185,21 @@ begin
 end;
 
 
-{function DateDifference(minuend, subtrahend: Date): boolean;
+function DateDifference(minuend, subtrahend: Date): boolean;
 var dif: shortint;
 begin
-if (minuend.month > subtrahend.month) or 
-  ((minuend.month = subtrahend.month) and (minuend.day >= subtrahend.day)) then
-  dif:=minuend.year - subtrahend.year else
-  dif:=minuend.year - subtrahend.year - 1;
-if dif <=17 then begin
-  writeln('(',sCounter,') ОШИБКА: Разница между датой рождения ',
-          minuend, ') и датой аттестации' , subtrahend,' должна быть больше 17');
-  result:=true;
+if Date1less2(subtrahend, minuend) then begin
+  if (minuend.month > subtrahend.month) or 
+    ((minuend.month = subtrahend.month) and (minuend.day >= subtrahend.day)) then
+    dif:=minuend.year - subtrahend.year else
+    dif:=minuend.year - subtrahend.year - 1;
+  if dif <=17 then begin
+    writeln('(',sCounter,') ОШИБКА: Разница между датой рождения ',
+            minuend, ') и датой аттестации' , subtrahend,' должна быть больше 17');
+    result:=true;
 end;
-end;}
+end;
+end;
 
 
 begin
@@ -216,7 +232,7 @@ begin
       	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
       	  if CheckDate(s, 'рождения') = true then error:=true;
       	  if CheckDate(s, 'аттестации') = true then error:=true;
-    //  	  if DateDifference(;{что-точто-то}) = true then error:=true;
+      	  if DateDifference(tow[sCounter].attestation, tow[sCounter].birth) = true then error:=true;
       	  if error = false then begin
       	    sRightCounter:=sRightCounter + 1;
       	    PutToArray(ssave, tow);

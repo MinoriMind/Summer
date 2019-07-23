@@ -20,6 +20,7 @@ end;
 //будет выводить массива в файл
 
 function Date1less2 (var first, second: Date): boolean;
+//true если 1 дата меньше 2-й
 begin
 if first.year > second.year then result:=false;
 if first.year < second.year then result:=true;
