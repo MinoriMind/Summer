@@ -5,10 +5,24 @@ interface
   
   procedure File1Check (var f1: text;
                         var tow: TableOfWorkers);
-                 
+  function CheckName (var s:string; field:string; sCounter: integer):boolean;
 
 implementation
 
+function CheckName (var s:string; field:string; sCounter: integer):boolean;
+var F: string[15];
+begin
+F:=copy(s, 1, 15);
+if (copy(s, 1, 1) > 'Я') or (copy(s, 1, 1) < 'А')
+  then result:=true;
+for var i:=2 to (pos(' ',s) - 1) do begin
+  if (copy(s, i, 1) > 'я') or (copy(s, i, 1) < 'а') then result:=true;
+end;
+if result = true then writeln('(',sCounter,') ОШИБКА: ',field,' ', F,' должна ',
+ 'начинаться с заглавной буквы, за которой следуют маленькие ',
+ 'буквы русского алфавита');
+delete(s, 1, 16);
+end;
 
 procedure File1Check (var f1:text;
                       var tow: TableOfWorkers);
@@ -19,34 +33,17 @@ var
   error: boolean;
 
   
-function CheckName (var s:string; field:string):boolean;
-var F: string[15];
-begin
-F:=copy(s, 1, 15);
-if (copy(s, 1, 1) > 'Я') or (copy(s, 1, 1) < 'А')
-  then result:=true;
-for var i:=2 to (pos(' ',s) - 1) do begin
-  if (copy(s, i, 1) > 'я') or (copy(s, i, 1) < 'а') then result:=true;
-end;
-if result = false then 
-  for var i:=pos(' ', s) to 15 do begin
-    if copy(s, i, 1) <> (' ') then result:=true;
-  end;
-if result = true then writeln('(',sCounter,') ОШИБКА: ',field,' ', F,' должна ',
- 'начинаться с заглавной буквы, за которой следуют маленькие ',
- 'буквы русского алфавита');
-delete(s, 1, 16);
-end;
+
 
 
 function CheckInitials (var s:string; field:string) :boolean;
 var F: string[2];
 begin
 F:=copy(s, 1, 2);
-if (s[1] < 'A') or (s[1] > 'Я') or (s[2] <> '.') then begin
+if (s[1] < 'А') or (s[1] > 'Я') then begin
   result:=true;
 if s[2] <> '.' then result:=true;
-  writeln('(',sCounter,') ОШИБКА: ',field, F, 'должно ',
+if result = true then writeln('(',sCounter,') ОШИБКА: ',field, F, 'должно ',
  'состоять из заглавной буквы русского алфавита и точки');
 end;
 delete(s, 1, 3); 
@@ -206,11 +203,11 @@ begin
       	else begin
       	if s = '' then writeln('Cтрока ', sCounter, ' пустая') else
       	begin
-      	  if CheckName(s, 'Фамилия') = true then error:=true;
+      	  if CheckName(s, 'Фамилия', sCounter) = true then error:=true;
       	  if CheckInitials(s, 'Имя') = true then error:=true;
       	  if CheckInitials(s, 'Отчество') = true then error:=true;
       	  if CheckGender(s) = true then error:=true;
-      	  if CheckName(s, 'Профессия') = true then error:=true;
+      	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
       	  if CheckDate(s, 'Рождения') = true then error:=true;
       	  if CheckDate(s, 'Аттестации') = true then error:=true;
     //  	  if DateDifference(;{что-точто-то}) = true then error:=true;

@@ -32,24 +32,6 @@ delete(s, 1, 2);
 end;
 
 
-function CheckName (var s:string; field:string):boolean;
-var F: string[15];
-begin
-F:=copy(s, 1, 15);
-if (copy(s, 1, 1) > 'Я') or (copy(s, 1, 1) < 'А')
-  then result:=true;
-for var i:=2 to (pos(' ',s) - 1) do begin
-  if (copy(s, i, 1) > 'я') or (copy(s, i, 1) < 'а') then result:=true;
-end;
-if result = false then 
-  for var i:=pos(' ', s) to 15 do begin
-    if copy(s, i, 1) <> (' ') then result:=true;
-  end;
-if result = true then writeln('(',sCounter,') ОШИБКА: ',field,' ', F,' должна ',
- 'начинаться с заглавной буквы, за которой следуют маленькие ',
- 'буквы русского алфавита');
-delete(s, 1, 16);
-end;
 
 
 procedure PutToArray(ssave: string; sRightCounter: integer);
@@ -80,7 +62,7 @@ begin
     	end
     	else begin
     	  if CheckPeriod(s) = true then error:=true;
-    	  if CheckName(s, 'Профессия') = true then error:=true;
+    	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
     	  if error = false then begin
     	    sRightCounter:=sRightCounter + 1;
     	    PutToArray(ssave, sRightCounter);
