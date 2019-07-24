@@ -33,8 +33,8 @@ var
   error: boolean;
 
   
-function Date1less2 (var first, second: Date): boolean;
-//true если 1 дата меньше 2-й
+function Date1less2 (var first, second: Date):boolean;
+//true если 1-я дата меньше 2-й
 begin
 if first.year > second.year then result:=false;
 if first.year < second.year then result:=true;
@@ -50,7 +50,7 @@ end;
 end;
 
 
-function CheckInitials (var s:string; field:string) :boolean;
+function CheckInitials (var s:string; field:string):boolean;
 var F: string[2];
 begin
 F:=copy(s, 1, 2);
@@ -195,10 +195,35 @@ if Date1less2(subtrahend, minuend) then begin
     dif:=minuend.year - subtrahend.year - 1;
   if dif <=17 then begin
     writeln('(',sCounter,') ОШИБКА: Разница между датой рождения ',
-            minuend, ') и датой аттестации' , subtrahend,' должна быть больше 17');
+            minuend, ' и датой аттестации' , subtrahend,' должна быть больше 17');
     result:=true;
 end;
 end;
+end;
+
+
+function TakeDate(ssave: string): boolean;
+var attestation, birth: string[10];
+    atd, atm, brd, brm: string[2]; //день, месяц аттестации, рождения
+    aty, bry: string[4]; //год
+    atDate, brDate: Date;
+    err: integer;
+begin
+birth:=copy(ssave, 19, 10);
+attestation:=copy(ssave, 30, 10);
+brd:=copy(birth, 1, 2);
+brm:=copy(birth, 4, 2);
+bry:=copy(birth, 7, 4);
+val(brd, brDate.day, err);
+val(brm, brDate.month, err);
+val(bry, brDate.year, err);
+atd:=copy(attestation, 1, 2);
+atm:=copy(attestation, 4, 2);
+aty:=copy(attestation, 7, 4);
+val(atd, atDate.day, err);
+val(atm, atDate.month, err);
+val(aty, atDate.year, err);
+if DateDifference(atDate, brDate) = true then result:=true;
 end;
 
 
@@ -232,7 +257,8 @@ begin
       	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
       	  if CheckDate(s, 'рождения') = true then error:=true;
       	  if CheckDate(s, 'аттестации') = true then error:=true;
-      	  if DateDifference(tow[sCounter].attestation, tow[sCounter].birth) = true then error:=true;
+          if error = false then 
+            if TakeDate(ssave) = true then error:=true;
       	  if error = false then begin
       	    sRightCounter:=sRightCounter + 1;
       	    PutToArray(ssave, tow);
