@@ -17,7 +17,7 @@ begin
 ReadInputDate(input_date);
 File1Check(staff,tow);
 File2Check(catalog,toc);
-toq:=PutToArray(tow, toc, input_date);
+PutToArray(tow, toc, input_date, toq);
 //PrintInFile(toq);
-writeln(toq[1].month);
+writeln(toq[1].fem);
 end.

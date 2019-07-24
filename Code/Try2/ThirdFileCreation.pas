@@ -5,8 +5,8 @@ interface
 
   procedure PrintInFile (toq: TableOfReq);
   
-  function PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
-                     input_date: Date): TableOfReq;
+  procedure PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
+                     input_date: Date;var toq: TableOfReq);
 
 
 implementation
@@ -40,10 +40,9 @@ end;
 end;
 
 
-function PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
-                     input_date: Date): TableOfReq;
-var toq: TableOfReq;
-    i, j: byte;
+procedure PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
+                     input_date: Date; var toq: TableOfReq);
+var i, j: byte;
     timetoattestate: Date; //время когда нужно пройти аттестацию
     day, month: string;
 begin
@@ -61,6 +60,8 @@ begin
           toq[tow[i].attestation.month].month:=tow[i].attestation.month;
           if tow[i].gender = 'М' then toq[tow[i].attestation.month].male:=toq[tow[i].attestation.month].male + 1 else
           toq[tow[i].attestation.month].fem:=toq[tow[i].attestation.month].fem + 1;
+          writeln(tow[i].attestation.month);
+          writeln(toq[tow[i].attestation.month].fem);
        end;
     end;
     j:=j + 1;

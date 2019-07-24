@@ -32,9 +32,7 @@ delete(s, 1, 2);
 end;
 
 
-
-
-procedure PutToArray(ssave: string; sRightCounter: integer);
+procedure PutToArray(ssave: string; sRightCounter: integer; var toc: TableOfCatalog);
 var period: char;
     p: byte;
     err: integer;
@@ -42,10 +40,11 @@ begin
 period:=ssave[1];
 val(period, p, err);
   toc[sRightCounter].period:=p;
-if pos(' ', ssave) > 3 then
-  toc[sRightCounter].profession:=copy(ssave, 3, pos(' ', ssave) - 1)
+delete(ssave, 1, 2);
+if pos(' ', ssave) > 1 then
+  toc[sRightCounter].profession:=copy(ssave, 1, pos(' ', ssave) - 1)
 else
-  toc[sRightCounter].profession:=copy(ssave, 3, 15);
+  toc[sRightCounter].profession:=copy(ssave, 1, 15);
 end;
 
 
@@ -71,7 +70,7 @@ begin
     	  if CheckName(s, 'Профессия', sCounter) = true then error:=true;
     	  if error = false then begin
     	    sRightCounter:=sRightCounter + 1;
-    	    PutToArray(ssave, sRightCounter);
+    	    PutToArray(ssave, sRightCounter, toc);
     	  end;
       end;
     end;
