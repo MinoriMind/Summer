@@ -35,11 +35,17 @@ end;
 
 
 procedure PutToArray(ssave: string; sRightCounter: integer);
+var period: char;
+    p: byte;
+    err: integer;
 begin
-  {toc[sRightCounter].period:=ssave[1];
-  delete(ssave, 1, 2);
-  toc[sRightCounter].profession:=copy(ssave, 1, 15);
-  delete(ssave, 1, 16);}
+period:=ssave[1];
+val(period, p, err);
+  toc[sRightCounter].period:=p;
+if pos(' ', ssave) > 3 then
+  toc[sRightCounter].profession:=copy(ssave, 3, pos(' ', ssave) - 1)
+else
+  toc[sRightCounter].profession:=copy(ssave, 3, 15);
 end;
 
 

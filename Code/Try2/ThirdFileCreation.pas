@@ -4,9 +4,13 @@ interface
   uses GlobalTypes, FirstFileCheck, SecondFileCheck;
 
   procedure PrintInFile (toq: TableOfReq);
+  
+  procedure PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
+                     input_date: Date);
 
 
 implementation
+
 procedure PrintInFile (toq: TableOfReq);
 var i: byte;
 begin
@@ -37,34 +41,32 @@ end;
 
 
 procedure PutToArray(tow: TableOfWorkers; toc: TableOfCatalog; 
-                     input_date: Date; sRightCounter: integer);
+                     input_date: Date);
 var toq: TableOfReq;
     i, j: byte;
-    attestate, dateint: Date;
+    timetoattestate: Date; //время когда нужно пройти аттестацию
     day, month: string;
-    foundperiod: boolean;
 begin
-i:=0;
+i:=1;
 while (i <= 12) and (tow[i].gender <> '') do
 begin
-  foundperiod:=false;
-  j:=0;
-  while (j < maxcorrect) and (foundperiod = false) do
+  j:=1;
+  while (j < maxcorrect) do //сделать до количества элементов в массиве
+  //смотреть первую строку 1-го массива, и бегать по второму, если найдено то пихать сюда
   begin
     if (tow[i].profession = toc[j].profession) then begin
-      foundperiod:=true;
       //если пришло время аттестаровиться: год аттестации + пероид > указанной даты
-      attestate.year:=tow[i].attestation.year + toc[j].period;
-      if Date1less2(attestate, dateint) = true then begin
+      timetoattestate.year:=tow[i].attestation.year + toc[j].period;
+      if Date1less2(input_date, timetoattestate) = true then begin
           toq[i].month:=tow[i].attestation.month;
           if tow[i].gender = 'М' then toq[i].male:=toq[i].male + 1 else
           toq[i].fem:=toq[i].fem + 1;
        end;
-       j:=j + 1; 
     end;
+    j:=j + 1;
   end;
-end;
 i:=i + 1;
+end;
 end;
 
 begin

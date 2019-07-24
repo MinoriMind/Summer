@@ -30,9 +30,9 @@ type
   end;
   
   
-  TableOfWorkers = array [0..maxcorrect] of worker;
-  TableOfCatalog = array [0..maxcorrect] of catalog;
-  TableOfReq = array [0..maxcorrect] of req_to_attestate;
+  TableOfWorkers = array [1..maxcorrect] of worker;
+  TableOfCatalog = array [1..maxcorrect] of catalog;
+  TableOfReq = array [1..maxcorrect] of req_to_attestate;
   
   
   

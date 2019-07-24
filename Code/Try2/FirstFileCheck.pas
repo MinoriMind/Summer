@@ -159,13 +159,13 @@ var dd, mm, yy: string;
 begin
   tow[sRightCounter].gender:=ssave[1];
   delete(ssave, 1, 2);
-  tow[sRightCounter].profession:=copy(ssave, 1, 15);
+  tow[sRightCounter].profession:=copy(ssave, 1, pos(' ', ssave) - 1);
   delete(ssave, 1, 16);
   dd:=copy(ssave, 1, 2);
   val(dd, day, err);
-  mm:=copy(ssave, 3, 2);
+  mm:=copy(ssave, 4, 2);
   val(mm, mon, err);
-  yy:=copy(ssave, 3, 2);
+  yy:=copy(ssave, 7, 4);
   val(yy, year, err);
   tow[sRightCounter].birth.day:=day;
   tow[sRightCounter].birth.month:=mon;
@@ -173,14 +173,13 @@ begin
   delete(ssave, 1, 11);
   dd:=copy(ssave, 1, 2);
   val(dd, day, err);
-  mm:=copy(ssave, 3, 2);
+  mm:=copy(ssave, 4, 2);
   val(mm, mon, err);
-  yy:=copy(ssave, 3, 2);
+  yy:=copy(ssave, 7, 4);
   val(yy, year, err);
   tow[sRightCounter].attestation.day:=day;
   tow[sRightCounter].attestation.month:=mon;
   tow[sRightCounter].attestation.year:=year;
-  delete(ssave, 1, 11);
   delete(ssave, 1, 11);
 end;
 

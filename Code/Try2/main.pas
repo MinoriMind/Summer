@@ -14,9 +14,10 @@ var
 
   
 begin
-//ReadInputDate(input_date);
+ReadInputDate(input_date);
 File1Check(staff,tow);
 File2Check(catalog,toc);
-PrintInFile(toq);
-writeln(toq[0].month);
+PutToArray(tow, toc, input_date);
+//PrintInFile(toq);
+writeln(toq[1].month);
 end.
