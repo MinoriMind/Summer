@@ -32,7 +32,7 @@ type
   
   TableOfWorkers = array [1..maxcorrect] of worker;
   TableOfCatalog = array [1..maxcorrect] of catalog;
-  TableOfReq = array [1..maxcorrect] of req_to_attestate;
+  TableOfReq = array [1..12] of req_to_attestate;
   
   
   
